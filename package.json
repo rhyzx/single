@@ -1,12 +1,12 @@
 {
   "name"          : "single",
-  "description"   : "single js",
-  "version"       : "0.0.0",
+  "description"   : "combine modules into single js for browser running",
+  "version"       : "0.1.0",
   "author"        : "rhyzx",
   "homepage"      : "https://github.com/rhyzx/single",
   "keywords"      : [ "single", "singlejs", "module", "commonjs", "browser" ],
   
   "repository"    : { "type": "git", "url": "git@github.com:rhyzx/single.git" },  
-  "bin"           : { "single": "./bin/single" },
+  "bin"           : { "singlec": "./bin/singlec" },
   "main"          : "index"
 }

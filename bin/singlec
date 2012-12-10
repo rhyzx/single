@@ -1,0 +1,145 @@
+#!/usr/bin/env node
+
+var path    = require('path')
+  , fs      = require('fs')
+  , single  = require('../')
+  , args    = process.argv.slice(2)
+;
+
+
+
+//options key map.
+//true      : param with value
+//false     : param without value(boolean)
+//function  : interrupt and run
+var options = {
+    'output'  : true
+  , 'input'   : true
+  , 'charset' : true
+  , 'watch'   : false
+  , 'compress': false
+  , 'version' : printVersion
+  , 'help'    : printHelp
+},  short = { //short name
+    'o'       : 'output'
+  , 'i'       : 'input'
+  , 'w'       : 'watch'
+  , 'c'       : 'compress'
+  , 'v'       : 'version'
+  , 'h'       : 'help'
+};
+
+
+
+var modules = [] //modules defination (path and alias
+  , config  = {} //combine config
+;
+
+
+
+//resolve args
+var next; //param with specified value (next arg
+var interrupted = !args.every(function (arg) {
+    if (next) { //arg is value of the prev param
+        config[next] = arg;
+        next = null;
+        return true;
+    }
+
+    if (arg.charAt(0) === '-') { //option arg
+        var option, name;
+
+        //extract option
+        if (arg.charAt(1) === '-') { //full name option
+            name = arg.slice(2);
+        } else { //short option name
+            name = short[arg.slice(1)];
+        }
+        option = options[name];
+
+        //resolve option
+        if (typeof option === 'undefined') { //unrecognized option
+            console.log('Error: unrecognized flag ' +arg 
+                        +'\nTry --help for options');
+
+            //return false; //stop?
+        } else if (typeof option === 'function') { //print option
+            option(); //run to print
+            return false; //interrupt
+        } else if (option === true) { //next arg is value of this option
+            next = name;
+        } else { //option is true
+            config[name] = true;
+        }
+        
+    } else { //file path arg
+        modules.push({'path': arg});
+    }
+
+    return true;
+});
+
+if (interrupted) return; //stop
+
+
+
+//default input one.json
+if (modules.length < 1 && !config.input && fs.existsSync('single.json')) {
+    config.input = 'single.json';
+}
+
+
+
+//defination in file
+if (config.input) {
+    var input = require('./' +config.input);
+
+    if (input.modules) {
+        modules = modules.concat(input.modules);
+    }
+    
+    //config from command is higher level than file
+    config.output   = config.output || input.output;
+    config.compress = config.compress || input.compress;
+    config.charset  = config.charset || input.charset;
+    config.watch    = config.watch || input.watch;
+}
+
+
+
+//no modules, print help and stop
+if (modules.length < 1) {
+    printHelp();
+    return;
+}
+
+
+
+//main
+single.combine(modules, config);
+
+
+
+//prints
+function printVersion() {
+    console.log(single.version);
+}
+
+function printHelp() {
+    var help =
+        'Usage: singlec [options] [ -o script.js ] files.js..\n'+
+        '   or: singlec [options] [ -o script.js ] -i single.json\n'+
+        '\n'+
+        'Options:\n'+
+        '  -o, --output <file>  place output in file\n'+
+        '  -i, --input <file>   define options and module list in a json\n'+
+        //'                       default use single.json as input if exist\n'+
+        '  -w, --watch          watch mode\n'+
+        '  -c, --compress       compress with UglifyJS\n'+
+        '  --charset <string>   file\'s charset\n'+
+        '\n'+
+        '  -v, --version        print version\n'+
+        '  -h, --help           print help\n';
+    console.log(help);
+}
+
