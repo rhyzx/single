@@ -59,7 +59,7 @@ var interrupted = !args.every(function (arg) {
 
         //resolve option
         if (typeof option === 'undefined') { //unrecognized option
-            console.log('Error: unrecognized flag ' +arg 
+            console.error('Error: unrecognized flag ' +arg 
                         +'\nTry --help for options');
 
             //return false; //stop?
@@ -126,20 +126,20 @@ function printVersion() {
 }
 
 function printHelp() {
-    var help =
-        'Usage: singlec [options] [ -o script.js ] files.js..\n'+
-        '   or: singlec [options] [ -o script.js ] -i single.json\n'+
-        '\n'+
-        'Options:\n'+
-        '  -o, --output <file>  place output in file\n'+
-        '  -i, --input <file>   define options and module list in a json\n'+
-        //'                       default use single.json as input if exist\n'+
-        '  -w, --watch          watch mode\n'+
-        '  -c, --compress       compress with UglifyJS\n'+
-        '  --charset <string>   file\'s charset\n'+
-        '\n'+
-        '  -v, --version        print version\n'+
-        '  -h, --help           print help\n';
-    console.log(help);
+    console.log([
+        'Usage: singlec [options] [ -o script.js ] files.js..',
+        '   or: singlec [options] [ -o script.js ] -i single.json',
+        '',
+        'Options:',
+        '  -o, --output <file>  place output in file',
+        '  -i, --input <file>   define options and module list in a json',
+        //'                       default use single.json as input if exist',
+        '  -w, --watch          watch mode',
+        '  -c, --compress       compress with UglifyJS',
+        '  --charset <string>   file\'s charset',
+        '',
+        '  -v, --version        print version',
+        '  -h, --help           print help'
+    ].join('\n'));
 }
 
