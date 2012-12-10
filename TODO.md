@@ -31,3 +31,7 @@ TODO Others
 wrapper modules as a module, 
 singlec files.. module.js, 
 module.js can be singlec again
+
+define --main <file>
+exports || exports = main
+else g.main = main;
