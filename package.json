@@ -1,7 +1,7 @@
 {
   "name"          : "single",
   "description"   : "combine modules into single js for browser running",
-  "version"       : "0.1.0",
+  "version"       : "0.1.1",
   "author"        : "rhyzx",
   "homepage"      : "https://github.com/rhyzx/single",
   "keywords"      : [ "single", "singlejs", "module", "commonjs", "browser" ],
