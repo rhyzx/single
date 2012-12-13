@@ -8,6 +8,7 @@ var path    = require('path')
 
 
 
+
 //options key map.
 //true      : param with value
 //false     : param without value(boolean)
@@ -83,7 +84,7 @@ if (interrupted) return; //stop
 
 
 
-//default input one.json
+//default input 'single.json'
 if (modules.length < 1 && !config.input && fs.existsSync('single.json')) {
     config.input = 'single.json';
 }
@@ -92,7 +93,7 @@ if (modules.length < 1 && !config.input && fs.existsSync('single.json')) {
 
 //defination in file
 if (config.input) {
-    var input = require('./' +config.input);
+    var input = require(path.resolve(config.input)); //require input's absolute path
 
     if (input.modules) {
         modules = modules.concat(input.modules);
