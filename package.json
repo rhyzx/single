@@ -1,12 +1,18 @@
 {
-  "name"          : "single",
-  "description"   : "combine modules into single js for browser running",
-  "version"       : "0.1.2",
-  "author"        : "rhyzx",
-  "homepage"      : "https://github.com/rhyzx/single",
-  "keywords"      : [ "single", "singlejs", "module", "commonjs", "browser" ],
+  "name"        : "single",
+  "description" : "synchronous require for browsers",
+  "version"     : "0.2.0",
+  "author"      : "rhyzx",
+  "homepage"    : "https://github.com/rhyzx/single",
+  "keywords"    : [ "single", "singlejs", "module", "commonjs", "browser", "synchronous", "require" ],
   
-  "repository"    : { "type": "git", "url": "git@github.com:rhyzx/single.git" },  
-  "bin"           : { "singlec": "./bin/singlec" },
-  "main"          : "index"
+  "repository"  : { "type": "git", "url": "git@github.com:rhyzx/single.git" },  
+  "bugs"        : { "url": "https://github.com/rhyzx/single/issues" },
+
+  "main"        : "index",
+  "bin"         : { "singlec": "./bin/singlec" },
+
+  "dependencies": { "uglify-js": "2.2.x" },
+
+  "licenses"    : { "type": "MIT", "url": "http://github.com/rhyzx/single/raw/master/LICENSE" }
 }

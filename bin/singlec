@@ -14,7 +14,7 @@ var path    = require('path')
 //false     : param without value(boolean)
 //function  : interrupt and run
 var options = {
-    'output'  : true
+    'outfile' : true
   , 'input'   : true
   , 'charset' : true
   , 'watch'   : false
@@ -22,10 +22,10 @@ var options = {
   , 'version' : printVersion
   , 'help'    : printHelp
 },  short = { //short name
-    'o'       : 'output'
+    'o'       : 'outfile'
   , 'i'       : 'input'
   , 'w'       : 'watch'
-  , 'c'       : 'compress'
+  , 'x'       : 'compress'
   , 'v'       : 'version'
   , 'h'       : 'help'
 };
@@ -99,22 +99,20 @@ if (config.input) {
         modules = modules.concat(input.modules);
     }
     
-    //config from command is higher level than file
-    config.output   = config.output || input.output;
-    config.compress = config.compress || input.compress;
-    config.charset  = config.charset || input.charset;
-    config.watch    = config.watch || input.watch;
+    //set options in input
+    for (var option in options) {
+        if (typeof options[option] === 'function') continue; //pass rint option
+
+        //config from command is higher level than file
+        config[option] = config[option] || input[option];
+    }
 }
-
-
 
 //no modules, print help and stop
 if (modules.length < 1) {
     printHelp();
     return;
 }
-
-
 
 //main
 single.combine(modules, config);
@@ -132,13 +130,14 @@ function printHelp() {
         '   or: singlec [options] [ -o script.js ] -i single.json',
         '',
         'Options:',
-        '  -o, --output <file>  place output in file',
+        '  -o, --outfile <file> place output in file',
         '  -i, --input <file>   define options and module list in a json',
-        //'                       default use single.json as input if exist',
+        '                       default use single.json as input if exist',
         '  -w, --watch          watch mode',
-        '  -c, --compress       compress with UglifyJS',
+        '  -x, --compress       compress with UglifyJS',
         '  --charset <string>   file\'s charset',
         '',
+        //'  -v, --verbose        Verbose', //TODO
         '  -v, --version        print version',
         '  -h, --help           print help'
     ].join('\n'));
