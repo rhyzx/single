@@ -97,7 +97,10 @@ Usage
       -v, --version        print version
       -h, --help           print help'
 
-=== Input file defination example
+Input file
+----------
+
+=== example
 
 `single.json`
 
@@ -116,11 +119,12 @@ Usage
 run `$ singlec`
 
 
-UPCOMMING
+UPCOMING
 ---------
 
  - combine and export main module as a normal script(eg. `singlec deps/*.js util.js --main util -o util.js`
  - input file reloader
+
 
 License
 -------
