@@ -100,7 +100,7 @@ Usage
 Input file
 ----------
 
-=== example
+**example**
 
 `single.json`
 
