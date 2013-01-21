@@ -27,45 +27,50 @@ Quick Start
 -----------
 
 File structs
-
-    ./
-    ├── lib/
-    │   └── tool.js
-    ├── index.html
-    ├── index.js
-    └── [others.js]
-
-
-`tool.js`
-
-    exports.square = function(num) {
-        return num * num;
-    };
+```
+./
+├── lib/
+│   └── tool.js
+├── index.html
+├── index.js
+└── [others.js]
+```
 
 
-`index.js`
+*tool.js*
+```js
+exports.square = function(num) {
+    return num * num;
+};
+```
 
-    var tool = require('./lib/tool');
-    exports.test = function() {
-        console.log('success: 2*2 = ' + tool.square(2));
-    };
+
+*index.js*
+```js
+var tool = require('./lib/tool');
+exports.test = function() {
+    console.log('success: 2*2 = ' + tool.square(2));
+};
+```
 
 
 Combine it!
+```sh
+$ single index.js lib/*.js -o script.js
+```
 
-    $ singlec index.js lib/*.js -o script.js
 
+Use the combined js in html *index.html*
+```html
+<script src="script.js"></script>
+<script>
+    var index = require('index');
+    index.test(); //log 'success'
 
-Use the combined js in html `index.html`
-
-    <script src="script.js"></script>
-    <script>
-        var index = require('index');
-        index.test(); //log 'success'
-
-        //require('others'); //other page use
-        //require('lib/tool'); //tool.js is also available
-    </script>
+    //require('others'); //other page use
+    //require('lib/tool'); //tool.js is also available
+</script>
+```
 
 
 
@@ -76,6 +81,7 @@ Features
 - Watch mode(real-time update when files changed
 - Build in compress(use [UglifyJS](https://github.com/mishoo/UglifyJS2)
 - Asterisker path support(eg. `{ "path": "lib/*.js", "alias": "*" }`
+- Export as CommonJS module/AMD module/Standard script
 - Really **light weight**
 - and...?
 
@@ -83,46 +89,49 @@ Features
 Usage
 -----
 
-    Usage: singlec [options] [ -o script.js ] files.js..
-       or: singlec [options] [ -o script.js ] -i single.json
+```
+Usage: single [options] [ -o script.js ] files.js..
+   or: single [options] [ -o script.js ] -i single.json
 
-    Options:
-      -o, --outfile <file> place output in file
-      -i, --input <file>   define options and module list in a json
-                           default use single.json as input if exist
-      -w, --watch          watch mode
-      -x, --compress       compress with UglifyJS
-      --charset <string>   file\'s charset, default utf8
+Options:
+  -o, --outfile <file> place output in file
+  -i, --input <file>   define options and module list in a json
+                       default use single.json as input if exist
+  -w, --watch          watch mode
+  -x, --compress       compress with UglifyJS
+  --charset <string>   file\'s charset, default utf8
 
-      -v, --version        print version
-      -h, --help           print help'
+  -v, --version        print version
+  -h, --help           print help'
+```
 
 Input file
 ----------
 
 **example**
 
-`single.json`
+*single.json*
 
-    {
-      "outfile" : "script.js",
-      "compress": true,
-      "charset" : "utf8",
-      "watch"   : true,
-      "modules" : [
-        { "path": "lib/jquery-1.8.2-min.js", "alias": "jquery", "compress": false },
-        { "path": "lib/underscore.js"},
-        { "path": "page/*.js", "alias": "page-*"}
-      ]
-    }
+```js
+{
+  "outfile" : "script.js",
+  "compress": true,
+  "charset" : "utf8",
+  "watch"   : true,
+  "modules" : [
+    { "path": "lib/jquery-1.8.2-min.js", "alias": "jquery", "compress": false },
+    { "path": "lib/underscore.js"},
+    { "path": "page/*.js", "alias": "page-*"}
+  ]
+}
+```
 
-run `$ singlec`
+run `$ single`
 
 
 UPCOMING
 ---------
 
- - combine and export main module as a normal script(eg. `singlec deps/*.js util.js --main util -o util.js`
  - input file reloader
 
 

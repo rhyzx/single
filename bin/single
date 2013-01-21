@@ -7,8 +7,8 @@ var single  = require('../')
 //define options and usage
 var argv = require('optimist').wrap(80)
     .usage([
-        'Usage: singlec [options] [ -o script.js ] files.js..'
-      , '   or: singlec [options] [ -o script.js ] -i single.json'
+        'Usage: single [options] [ -o script.js ] files.js..'
+      , '   or: single [options] [ -o script.js ] -i single.json'
     ].join('\n'))
     
     .options('outfile', {

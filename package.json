@@ -10,7 +10,7 @@
   "bugs"        : { "url": "https://github.com/rhyzx/single/issues" },
 
   "main"        : "index",
-  "bin"         : { "singlec": "./bin/singlec" },
+  "bin"         : { "single": "./bin/single" },
 
   "dependencies": { "uglify-js": "2.2.x" , "optimist": "0.3.x" },
 
