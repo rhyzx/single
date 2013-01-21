@@ -1,145 +1,74 @@
 #!/usr/bin/env node
-
-var path    = require('path')
+var single  = require('../')
   , fs      = require('fs')
-  , single  = require('../')
-  , args    = process.argv.slice(2)
 ;
 
 
-
-
-//options key map.
-//true      : param with value
-//false     : param without value(boolean)
-//function  : interrupt and run
-var options = {
-    'outfile' : true
-  , 'input'   : true
-  , 'charset' : true
-  , 'watch'   : false
-  , 'compress': false
-  , 'version' : printVersion
-  , 'help'    : printHelp
-},  short = { //short name
-    'o'       : 'outfile'
-  , 'i'       : 'input'
-  , 'w'       : 'watch'
-  , 'x'       : 'compress'
-  , 'v'       : 'version'
-  , 'h'       : 'help'
-};
-
-
-
-var modules = [] //modules defination (path and alias
-  , config  = {} //combine config
-;
-
-
-
-//resolve args
-var next; //param with specified value (next arg
-var interrupted = !args.every(function (arg) {
-    if (next) { //arg is value of the prev param
-        config[next] = arg;
-        next = null;
-        return true;
-    }
-
-    if (arg.charAt(0) === '-') { //option arg
-        var option, name;
-
-        //extract option
-        if (arg.charAt(1) === '-') { //full name option
-            name = arg.slice(2);
-        } else { //short option name
-            name = short[arg.slice(1)];
-        }
-        option = options[name];
-
-        //resolve option
-        if (typeof option === 'undefined') { //unrecognized option
-            console.error('Error: unrecognized flag ' +arg 
-                        +'\nTry --help for options');
-
-            //return false; //stop?
-        } else if (typeof option === 'function') { //print option
-            option(); //run to print
-            return false; //interrupt
-        } else if (option === true) { //next arg is value of this option
-            next = name;
-        } else { //option is true
-            config[name] = true;
-        }
-        
-    } else { //file path arg
-        modules.push({'path': arg});
-    }
-
-    return true;
-});
-
-if (interrupted) return; //stop
-
-
-
-//default input 'single.json'
-if (modules.length < 1 && !config.input && fs.existsSync('single.json')) {
-    config.input = 'single.json';
-}
-
-
-
-//defination in file
-if (config.input) {
-    var input = require(path.resolve(config.input)); //require input's absolute path
-
-    if (input.modules) {
-        modules = modules.concat(input.modules);
-    }
+//define options and usage
+var argv = require('optimist').wrap(80)
+    .usage([
+        'Usage: singlec [options] [ -o script.js ] files.js..'
+      , '   or: singlec [options] [ -o script.js ] -i single.json'
+    ].join('\n'))
     
-    //set options in input
-    for (var option in options) {
-        if (typeof options[option] === 'function') continue; //pass rint option
+    .options('outfile', {
+        alias   : 'o'
+      , type    : 'string'
+      , describe: 'Place output in file'
+    })
+    .options('input-file', {
+        alias   : 'i'
+      , type    : 'string'
+      , describe: 'Define options and file list in a json file\n'
+                + 'Use "single.json" when no files inputed'
+      , default : 'single.json'
+    })
+    .options('watch', {
+        alias   : 'w'
+      , type    : 'boolean'
+      , describe: 'Watch mode'
+    })
+    .options('compress', {
+        alias   : 'x'
+      , type    : 'boolean'
+      , describe: 'Compress with UglifyJS'
+    })
+    .options('charset', {
+        type    : 'string'
+      , describe: 'Charset of files'
+    })
+    /*.options('v', {
+        alias   : 'verbose'
+      , type    : 'boolean'
+      , describe: 'Verbose'
+    })*/
+    .options('version', {
+        type    : 'boolean'
+      , describe: 'Print version'
+    })
+    .options('help', {
+        alias   : 'h'
+      , type    : 'boolean'
+      , describe: 'Print help'
+    })
+    .check(function (argv) {
+        if (argv.version) throw single.version;
+    })
+    .check(function (argv) {
+        if (argv.help) throw '';
+        if (
+            argv._.length < 1 &&
+            !fs.existsSync(argv.input)
+        ) throw 'No files input';
+    })
+    .argv
+;
 
-        //config from command is higher level than file
-        config[option] = config[option] || input[option];
-    }
-}
-
-//no modules, print help and stop
-if (modules.length < 1) {
-    printHelp();
-    return;
-}
 
 //main
-single.combine(modules, config);
-
-
-
-//prints
-function printVersion() {
-    console.log(single.version);
-}
-
-function printHelp() {
-    console.log([
-        'Usage: singlec [options] [ -o script.js ] files.js..',
-        '   or: singlec [options] [ -o script.js ] -i single.json',
-        '',
-        'Options:',
-        '  -o, --outfile <file> place output in file',
-        '  -i, --input <file>   define options and module list in a json',
-        '                       default use single.json as input if exist',
-        '  -w, --watch          watch mode',
-        '  -x, --compress       compress with UglifyJS',
-        '  --charset <string>   file\'s charset',
-        '',
-        //'  -v, --verbose        Verbose', //TODO
-        '  -v, --version        print version',
-        '  -h, --help           print help'
-    ].join('\n'));
-}
-
+single(argv._.length ? argv._ : argv.i, {
+    outfile : argv.outfile
+  , watch   : argv.watch
+  , compress: argv.compress
+  , charset : argv.charset
+});

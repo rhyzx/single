@@ -12,7 +12,7 @@
   "main"        : "index",
   "bin"         : { "singlec": "./bin/singlec" },
 
-  "dependencies": { "uglify-js": "2.2.x" },
+  "dependencies": { "uglify-js": "2.2.x" , "optimist": "0.3.x" },
 
   "licenses"    : { "type": "MIT", "url": "http://github.com/rhyzx/single/raw/master/LICENSE" }
 }
