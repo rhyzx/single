@@ -1,8 +1,11 @@
 #!/usr/bin/env node
 var single  = require('../')
+  , path    = require('path')
   , fs      = require('fs')
 ;
 
+//modules for building
+var modules = [];
 
 //define options and usage
 var argv = require('optimist').wrap(80)
@@ -10,11 +13,12 @@ var argv = require('optimist').wrap(80)
         'Usage: single [options] [ -o script.js ] files.js..'
       , '   or: single [options] [ -o script.js ] -i single.json'
     ].join('\n'))
-    
+
     .options('outfile', {
         alias   : 'o'
       , type    : 'string'
       , describe: 'Place output in file'
+      , default : 'single.js'
     })
     .options('input-file', {
         alias   : 'i'
@@ -27,15 +31,18 @@ var argv = require('optimist').wrap(80)
         alias   : 'w'
       , type    : 'boolean'
       , describe: 'Watch mode'
+      , default : false
     })
     .options('compress', {
         alias   : 'x'
       , type    : 'boolean'
       , describe: 'Compress with UglifyJS'
+      , default : false
     })
     .options('charset', {
         type    : 'string'
       , describe: 'Charset of files'
+      , default : 'utf8'
     })
     /*.options('v', {
         alias   : 'verbose'
@@ -56,17 +63,33 @@ var argv = require('optimist').wrap(80)
     })
     .check(function (argv) {
         if (argv.help) throw '';
-        if (
-            argv._.length < 1 &&
-            !fs.existsSync(argv.input)
-        ) throw 'No files input';
+    })
+    .check(function (argv) {
+        if (argv._.length < 1) {
+            if(!fs.existsSync(argv.i)) throw 'No files inputed';
+
+            // read input.json
+            var input = require(path.resolve(argv.i));
+
+            modules         = input.modules;
+            argv.outfile    = argv.outfile  || input.outfile;
+            argv.watch      = argv.watch    || input.watch;
+            argv.compress   = argv.compress || input.compress;
+            argv.charset    = argv.charset  || input.charset;
+        } else {
+            for (var i=0, path; path=argv._[i++];) {
+                modules.push({
+                    path : path
+                });
+            }
+        }
     })
     .argv
 ;
 
 
 //main
-single(argv._.length ? argv._ : argv.i, {
+single(modules, {
     outfile : argv.outfile
   , watch   : argv.watch
   , compress: argv.compress
