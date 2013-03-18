@@ -14,11 +14,21 @@ var argv = require('optimist').wrap(80)
       , '   or: single [options] [ -o script.js ] -i single.json'
     ].join('\n'))
 
+    .options('main', {
+        type    : 'string'
+      , describe: 'absolute path or alias of module to exports'
+      , default : 'single'
+    })
+    .options('name', {
+        type    : 'string'
+      , describe: 'exports main module with specified name(for window.name or AMD define), '
+                + 'equal to {main} if not set'
+    })
+
     .options('outfile', {
         alias   : 'o'
       , type    : 'string'
-      , describe: 'Place output in file'
-      , default : 'single.js'
+      , describe: 'Place output in file, equal to {name} if not set'
     })
     .options('input-file', {
         alias   : 'i'
@@ -44,6 +54,7 @@ var argv = require('optimist').wrap(80)
       , describe: 'Charset of files'
       , default : 'utf8'
     })
+
     /*.options('v', {
         alias   : 'verbose'
       , type    : 'boolean'
@@ -58,6 +69,7 @@ var argv = require('optimist').wrap(80)
       , type    : 'boolean'
       , describe: 'Print help'
     })
+
     .check(function (argv) {
         if (argv.version) throw single.version;
     })
@@ -72,6 +84,9 @@ var argv = require('optimist').wrap(80)
             var input = require(path.resolve(argv.i));
 
             modules         = input.modules;
+            argv.main       = argv.main     || input.main;
+            argv.name       = argv.name     || input.name;
+
             argv.outfile    = argv.outfile  || input.outfile;
             argv.watch      = argv.watch    || input.watch;
             argv.compress   = argv.compress || input.compress;
@@ -84,6 +99,10 @@ var argv = require('optimist').wrap(80)
             }
         }
     })
+    .check(function (argv) {
+        argv.name       = argv.name     || argv.main
+        argv.outfile    = argv.outfile  || path.basename(argv.name) +'.js'
+    })
     .argv
 ;
 
@@ -94,4 +113,7 @@ single(modules, {
   , watch   : argv.watch
   , compress: argv.compress
   , charset : argv.charset
+
+  , main    : argv.main
+  , name    : argv.name
 });
