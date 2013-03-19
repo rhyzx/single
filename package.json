@@ -1,7 +1,7 @@
 {
   "name"        : "single",
-  "description" : "synchronous require for browsers",
-  "version"     : "0.2.1",
+  "description" : "Synchronous require() for browsers",
+  "version"     : "0.3.0",
   "author"      : "rhyzx",
   "homepage"    : "https://github.com/rhyzx/single",
   "keywords"    : [ "single", "singlejs", "module", "commonjs", "browser", "synchronous", "require" ],
@@ -11,6 +11,7 @@
 
   "main"        : "index",
   "bin"         : { "single": "./bin/single" },
+  "preferGlobal": true,
 
   "dependencies": { "uglify-js": "2.2.x" , "optimist": "0.3.x" },
 
