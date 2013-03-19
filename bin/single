@@ -10,8 +10,8 @@ var modules = [];
 //define options and usage
 var argv = require('optimist').wrap(80)
     .usage([
-        'Usage: single [options] [ -o script.js ] files.js..'
-      , '   or: single [options] [ -o script.js ] -i single.json'
+        'Usage: single [options] [ -o build.js ] files.js..'
+      , '   or: single [options] [ -o build.js ] -i single.json'
     ].join('\n'))
 
     .options('main', {
