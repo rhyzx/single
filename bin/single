@@ -92,9 +92,9 @@ var argv = require('optimist').wrap(80)
             argv.compress   = argv.compress || input.compress;
             argv.charset    = argv.charset  || input.charset;
         } else {
-            for (var i=0, path; path=argv._[i++];) {
+            for (var i=0, p; p=argv._[i++];) {
                 modules.push({
-                    path : path
+                    path : p
                 });
             }
         }
